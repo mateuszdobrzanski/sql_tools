@@ -1,0 +1,20 @@
+@ECHO OFF
+
+SET DATABASE=DB NAME CAN BE WIT SPACE
+SET _fileName=%DATABASE: =_%
+SET _backupDir=C:\BACKUP\
+SET _myDate=%date%
+SET _myDateResult=%_myDate:.=-%
+
+
+IF exist %_backupDir% (@ECHO "Dir exist") ELSE (mkdir %_backupDir% && echo %_backupDir% created)
+
+set _todayBackup=%_backupDir%%_myDateResult%\
+mkdir %_todayBackup%
+
+
+set _backupName=%_todayBackup%%_fileName%__%_myDateResult%.bak
+
+echo %date% %time% > %_todayBackup%log.log
+
+sqlcmd -S localhost\__INSTANCE_NAME___ -E -Q "BACKUP DATABASE [%DATABASE%] TO DISK=N'%_backupName%' WITH CHECKSUM" >> %_todayBackup%log.log
